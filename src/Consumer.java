@@ -1,20 +1,24 @@
-class Consumer implements Runnable {
-    private Buffer buffer;
 
-    // Constructor to accept the shared buffer
-    public Consumer(Buffer buffer) {
-        this.buffer = buffer;
+import java.util.concurrent.BlockingQueue;
+ class Consumer implements Runnable {
+    private final BlockingQueue<Integer> queue;
+    private int sum = 0;
+
+    public Consumer(BlockingQueue<Integer> queue) {
+        this.queue = queue;
     }
 
     @Override
     public void run() {
         try {
-            while (true) {
-                // Consume an item from the buffer
-                buffer.consume();
+            while (!Thread.currentThread().isInterrupted()) {
+                // Retrieve a number from the queue (blocks if the queue is empty)
+                int number = queue.take();
+                sum += number;
+                System.out.println("Consumed: " + number + " | Current Sum: " + sum);
 
-                // Sleep to simulate time between consuming items
-                Thread.sleep(1000);
+                // Simulate delay
+                Thread.sleep(150);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
