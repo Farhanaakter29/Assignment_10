@@ -1,19 +1,14 @@
 public class Main {
     public static void main(String[] args) {
-        Counter counter = new Counter();
-        Thread thread1 = new Thread(new CounterIncrementer(counter), "Thread-1");
-        Thread thread2 = new Thread(new CounterIncrementer(counter), "Thread-2");
-        Thread thread3 = new Thread(new CounterIncrementer(counter), "Thread-3");
-        thread1.start();
-        thread2.start();
-        thread3.start();
-        try {
-            thread1.join();
-            thread2.join();
-            thread3.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Final count: " + counter.getCount());
+        // Create a shared buffer with a capacity of 5
+        Buffer buffer = new Buffer(5);
+
+        // Create producer and consumer threads
+        Thread producerThread = new Thread(new Producer(buffer), "Producer");
+        Thread consumerThread = new Thread(new Consumer(buffer), "Consumer");
+
+        // Start the threads
+        producerThread.start();
+        consumerThread.start();
     }
 }
